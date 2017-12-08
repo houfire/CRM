@@ -40,26 +40,17 @@
 .questionList{
 
 }
-.question{
-  width: 100%;
-  border: solid 1px #cccccc;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-.question_head{
-    height: 30px;
-    line-height: 30px;
-    position: relative;
+/*.question{*/
+  /*width: 100%;*/
 
-}
+/*}*/
+/*.question_head{*/
+    /*height: 30px;*/
+    /*line-height: 30px;*/
+    /*position: relative;*/
 
-.question_label{
-    color: #ccc;
-    font-size: 15px;
-    position: absolute;
-    top: 0;
-    left: 2px;
-}
+/*}*/
+
 
 .question_close{
     position: absolute;
@@ -90,14 +81,45 @@
 }
 .option_add a:hover{
     text-decoration: none;
+    cursor: pointer;
+}
+.option{
+    margin-left: 20px;
+    margin-top: 10px;
 }
 
-
 .option .form-group{
-    margin-right: 15px;
+    margin-left: 15px;
 }
 .incenter{
     line-height: 35px;
     margin-right: 15px;
     margin-left: 15px;
+}
+/*ul{*/
+    /*padding-left: 15px;*/
+/*}*/
+.questionList ol {
+    padding: 0;
+    list-style: none;
+    counter-reset: sectioncounter
+}
+.questionList ol > li{
+    border: solid 1px #cccccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: relative;
+}
+.questionList ol > li:before {
+    content: '问题' counter(sectioncounter) ':';
+    counter-increment: sectioncounter;
+    font-family: 微软雅黑;
+    font-size: 15px;
+    color: #d4d4d4;
+    margin-top: 3px;
+    margin-left: 3px;
+}
+
+.questionList ol > li:nth-of-type(odd) {
+    background-color: #f9f9f9;
 }

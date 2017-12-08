@@ -54,7 +54,7 @@ class Question(models.Model):
         (2,"单选"),
         (3,"评价"),
     )
-    tp = models. IntegerField(choices=question_types)
+    tp = models. IntegerField(choices=question_types,blank=False,default=1)
 
     questionnaire = models.ForeignKey(verbose_name="所属问卷",to=Questionnaire)
 
@@ -70,7 +70,7 @@ class Option(models.Model):
     qs = models.ForeignKey(to=Question)
 
     def __str__(self):
-        return self.name+"---"+self.score
+        return self.name
 
 class Answer(models.Model):
     '''
