@@ -1,0 +1,156 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li class="active"><a href="/index/">首页</a></li>
+            <li class="active"><a href="#">数据列表</a></li>
+            <li><a href="#">编辑问卷题目</a></li>
+        </ol>
+    </div>
+    <div class="container-fluid">
+        <div class="BtnMune">
+            <button type="button" class="btn btn-success Btn_add">添加</button>
+            <button type="button" class="btn btn-primary Btn_save">保存</button>
+        </div>
+
+        <div class="questionList">
+        {% csrf_token %}
+            <ol>
+                {% for item in questionFrom %}
+                    <li question_id="{{ item.question.id }}">
+                        <div class="question form-horizontal" >
+                            <div class="question_head">
+                                <button type="button" class="close question_close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">问题：</label>
+                                <div class="col-md-7  ">
+                                    {{ item.form.caption }}{{ item.form.errors.caption.0 }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">类型：</label>
+                                <div class="col-md-4">
+                                    {{ item.form.tp }}{{ item.form.errors.tp.0 }}
+                                </div>
+                                {% if item.options %}
+                                    <div class="col-md-3 option_add">
+                                        <a><span class="glyphicon glyphicon-plus"></span>添加选项</a>
+                                    </div>
+                                {% endif %}
+                                <ul class="col-md-offset-2 col-md-8">
+                                    {% for op in item.options %}
+                                    <li class="form-inline option" option_id="{{ op.option.id }}">
+                                        <div class="form-group">
+                                             <label>内容:</label>
+                                            {{ op.form.name }}{{ op.form.errors.name.0 }}
+                                        </div>
+                                        <div class="form-group">
+                                             <label>分值:</label>
+                                            {{ op.form.score }}{{ op.form.errors.score.0 }}
+                                            <button type="button" class="close incenter"
+                                                        aria-label="Close"><span
+                                                        aria-hidden="true">&times;</span></button>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    <script>
+        //添加问题
+        $(".Btn_add").on("click", function () {
+            s='<li question_id=""><div class="question form-horizontal" ><div class="question_head">'+
+                '<button type="button" class="close question_close"><span aria-hidden="true">&times;</span></button>'+
+                '</div><div class="form-group"><label class="col-md-2 control-label">问题：</label><div class="col-md-7">'+
+                '<textarea name="caption" cols="40" rows="3" class="form-control Textarea" maxlength="64" placeholder="请输入问题！"></textarea>'+
+                '</div></div><div class="form-group"><label class="col-md-2 control-label">类型：</label><div class="col-md-4">'+
+                '<select name="tp" class="form-control"><option value="1" selected="">打分</option><option value="2">单选</option>' +
+                '<option value="3">评价</option></select></div><ul class="col-md-offset-2 col-md-8"></ul></div></div></li>';
+            $(".questionList > ol").append(s);
+        });
+
+        //删除问题
+        $(".questionList ").on("click", '.question_close', function () {
+            $(this).parent().parent().parent().remove()
+        });
+        //删除答案选项
+        $(".questionList ").on("click", '.incenter', function () {
+            $(this).parent().parent().remove()
+        });
+        //选择单选 弹出添加选项，反之删除
+        $(".questionList").on("change", "select", function () {
+            console.log($(this).parent());
+            s = '<div class="col-md-2 option_add"><a><span class="glyphicon glyphicon-plus"></span>添加选项</a></div>';
+            if ($(this).val() == 2) {
+                $(this).parent().after(s)
+            } else {
+                $(this).parent().next().next().children().remove();
+                $(this).parent().next().remove()
+            }
+        });
+
+        //添加答案选项
+        $(".questionList").on("click", '.option_add', function () {
+            console.log($(this));
+            s = '<li class="form-inline option"  option_id=""> <div class="form-group"> <label>内容:</label>'+
+                ' <input type="text" name="name" class="form-control" placeholder="内容" maxlength="32" ></div>'+
+                ' <div class="form-group"><label>分值:</label> <input type="text" name="score" class="form-control" placeholder="分值" >'+
+                '<button type="button" class="close incenter" aria-label="Close"><span aria-hidden="true">×</span></button></div></li>';
+            $(this).next().append(s)
+        });
+
+        //保存问题
+        $(".Btn_save").on("click",function () {
+
+            var question_list=[];
+            $(".questionList > ol > li").each(function () {
+
+                var question_id=$(this).attr("question_id");
+                var textarea=$(this).find("textarea").val();
+                var select=$(this).find("select").val();
+                var options=[];
+                if ( select == 2){
+                      $(this).find("ul > li").each(function () {
+                           var name = $(this).find("[name=name]").val();
+                           var score =$(this).find("[name=score]").val();
+                           var option_id =$(this).attr("option_id");
+                           options.push({"option_id":option_id,"option_content":{"name":name,"score":score}})
+                      });
+                }
+                question_list.push(
+                    {"question_id":question_id,"question_content":{"caption":textarea,"tp":Number(select)},"options":options}
+                    );
+            });
+
+           console.log(question_list);
+            $.ajax({
+                url:'/questionnaire/{{ request.session.naire_id }}/',
+                type:'post',
+                headers:{"X-CSRFToken":$("[name=csrfmiddlewaretoken]").val()},
+                data:JSON.stringify({"question_list":question_list}),
+                processData:false,
+                contentType:false,
+                success:function (data){
+                    console.log(data);
+                    if (data=='OK'){
+                        location.href = '/index/'
+                    }else{
+                        alert("输入数据有问题")
+                    }
+
+
+                }
+            })
+
+        })
+    </script>
+
+{% endblock %}

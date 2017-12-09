@@ -80,8 +80,8 @@ class Answer(models.Model):
     question = models.ForeignKey(to=Question)
     questionnaire = models.ForeignKey(verbose_name="所属问卷", to=Questionnaire,blank=True)
 
-    option = models.ForeignKey(to=Option,null=True,blank=True)
     val = models.IntegerField(null=True,blank=True)
+    option = models.ForeignKey(to=Option,null=True,blank=True)
     content = models.CharField(max_length=255,null=True,blank=True)
 
     def __str__(self):

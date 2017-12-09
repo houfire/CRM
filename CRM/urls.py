@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^index/$', views.index),
     url(r'^questionnaire/(?P<naire_id>\d+)/$', views.questionnaire),
+    url(r'^questionnaireAdd/$',views.questionnaireAdd),
+    url(r'^investigation/(?P<naire_id>\d+)/$',views.investigation),
     # url(r"^aaa/(?P<naire_id>\d+)/$",views.aaa),
 
 

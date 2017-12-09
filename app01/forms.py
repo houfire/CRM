@@ -25,7 +25,7 @@ class QuestionFrom(forms.ModelForm):
             "caption":{"required":"不能为空"},
         }
         widgets = {
-            "caption":wd.Textarea(attrs={"rows":"3","class":"form-control Textarea"}),
+            "caption":wd.Textarea(attrs={"rows":"3","class":"form-control Textarea","placeholder":"请输入问题！"}),
             "tp":wd.Select(attrs={"class":"form-control"}),
         }
 

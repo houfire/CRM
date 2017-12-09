@@ -1,0 +1,33 @@
+.Logo{
+    height: 50px;
+    line-height: 50px;
+    background-color:#2B668F ;
+    font-size: 35px;
+    font-family: 微软雅黑;
+    font-weight: 400;
+    text-align: center;
+    color: white;
+}
+.Mune{
+    height: 50px;
+    line-height: 50px;
+    background-color:#337ab7 ;
+    font-size: 16px;
+    font-family: 微软雅黑;
+    font-weight: normal;
+}
+.Mune a{
+    color: white;
+    text-decoration: none;
+    margin-right: 30px;
+}
+
+.MuneLeft{
+
+}
+.danger{
+ background-color: #d9534f;
+}
+.success{
+    background-color: #5cb85c;
+}

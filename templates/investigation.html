@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/investigation.css">
+    <script src="/static/js/jquery-3.1.1.js"></script>
+</head>
+<body>
+<div class="nav">
+    <div class="col-md-3 Logo ">CRM系统</div>
+    <div class="col-md-9 Mune">
+        <div class="MuneLeft pull-left">
+            <a href="#">平台首页</a>
+            <a href="#">资产首页</a>
+        </div>
+        <div class="MuneRight pull-right">
+            <a href="">任务 <span class="badge danger">4</span></a>
+            <a href="">通知 <span class="badge success">2</span></a>
+            <a href="">消息 <span class="badge success">3</span></a>
+            <a href=""><img src="/static/img/default.png" alt="..." class="img-circle"></a>
+        </div>
+    </div>
+</div>
+<div class="col-md-8 col-md-offset-2">
+    <h4>1.本班同学才能进行评价</h4>
+    <h4>2.学生只能对同一个问卷进行一次调查</h4>
+    <div class="questionList">
+
+        <form action="/investigation/{{ request.session.naire_id }}/" method="POST" novalidate>
+        {% csrf_token %}
+            {% for fd in form %}
+                <div class="question">
+                    <div class="question_title">{{ fd.label }}:<span class="error">{{ fd.errors }}</span></div>
+                    <div class="question_content">{{ fd }}</div>
+                </div>
+            {% endfor %}
+        <div class="updata">
+            <input type="submit" id="btn" class="btn btn-success col-md-offset-6" value="提交">
+        </div>
+        </form>
+    </div>
+</div>
+<!--
+<script>
+    $("#btn").on("click",function () {
+        var answer_list={};
+        $("input:radio:checked").each(function () {
+            var name = $(this).attr("name");
+            var option_id = $(this).attr("value");
+{#            answer_list.push({"name":name,"value":Number(option_id)})#}
+            answer_list[name]=option_id
+        });
+        $("textarea").each(function () {
+            var name = $(this).attr("name");
+            var textvalue= $(this).val();
+{#            answer_list.push({"name":name,"value":textvalue})#}
+{#            answer_list.push({name:textvalue})#}
+            answer_list[name]=textvalue
+        });
+        console.log(answer_list);
+        $.ajax({
+            url:'/investigation/{{ request.session.naire_id }}/',
+            type:"POST",
+            headers:{"X-CSRFToken":$("[name=csrfmiddlewaretoken]").val()},
+            data:JSON.stringify(answer_list),
+            processData:false,
+            contentType:false,
+            success:function (data) {
+                console.log(data)
+            }
+        })
+    });
+
+
+</script>
+-->
+</body>
+</html>
