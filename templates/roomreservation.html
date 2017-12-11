@@ -1,0 +1,106 @@
+{% load reservation_tag %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/roomreservation.css">
+    <script src="/static/js/jquery-3.1.1.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>会议室预定</h1>
+        <h4>当前日期:{{ datatime_obj.first.datetime |date:"Y-m-d"}}</h4>
+        <div class="col-md-3 form-inline">时间：<input type="text" class="form-control" name="input_time" value="{{ datatime_obj.first.datetime |date:"Y-m-d"}}"></div>
+        <button type="button" class="btn btn-success" id="Btn">保存</button>
+        <hr>
+        <form action="/roomreservation/" method="get" novalidate>
+            <div class="col-md-3 form-inline">查询：<input type="text" class="form-control" name="find_data"></div>
+            <button type="submit" class="btn btn-success" id="Fbtn">查询</button>
+        </form>
+
+        <hr>
+        {% csrf_token %}
+        <div class="content">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th >会议室</th>
+                        {% for time in time_list %}
+                            <th>{{ time.title }}</th>
+                        {% endfor %}
+                     </tr>
+                </thead>
+                <tbody>
+                    {% for room in room_list %}
+                        <tr room_id="{{ room.id }}">
+                            <th>{{ room.title }}</th>
+                            {% for time in time_list %}
+                               {% simple_is_checked time.id time.title select_list  room.id %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+{#        $("tr > td").hover(function () {#}
+{#            $(this).css("background-color","#ccc")#}
+{#        });#}
+        $td = $("tr > td");
+        $td.hover(function () {
+            //出现一个问题，|| 不能或
+            console.log($(this))
+            console.log($(this).hasClass('selected'))
+            console.log($(this).hasClass('blue'))
+            if (!($(this).hasClass('selected') || $(this).hasClass('blue'))){
+                $(this).addClass("selfhover")
+            }
+        },function () {
+            $(this).removeClass("selfhover")
+        });
+
+        $("tbody").on("click",".isEmpty",function () {
+            console.log($(this),"1");
+            $(this).toggleClass("blue");
+        });
+
+        $("#Btn").on("click",function () {
+            var add_list=[];
+            $("td[class*=blue]").each(function () {
+                console.log($(this));
+                var roomId= $(this).parent().attr("room_id");
+                var timeId = $(this).attr("time_id");
+                add_list.push({"room_id":Number(roomId),"time_id":Number(timeId)})
+
+            });
+            var nowData=$("input[name=input_time]").val();
+
+            $.ajax({
+                url:'/roomreservation/',
+                type:'POST',
+                headers:{'X-CSRFToken':$("[name=csrfmiddlewaretoken]").val()},
+                data:JSON.stringify({"nowData":nowData,"add_list":add_list}),
+                processData:false,
+                contentType:false,
+                success:function (data) {
+                    if (data=="OK"){
+                        location.href = '/roomreservation/';
+                    }
+                }
+            })
+
+        });
+{#        $("#Fbtn").on("click",function () {#}
+{#                $.ajax({#}
+{#                    url:',#}
+{#                    type:"GET",#}
+{#                    data:$("[name=find_data]").val()#}
+{#                    su#}
+{#                })#}
+{#        })#}
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from app01 import views
+from reservation import  views as reservation_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
@@ -23,6 +24,7 @@ urlpatterns = [
     url(r'^questionnaire/(?P<naire_id>\d+)/$', views.questionnaire),
     url(r'^questionnaireAdd/$',views.questionnaireAdd),
     url(r'^investigation/(?P<naire_id>\d+)/$',views.investigation),
+    url(r'^roomreservation/$',reservation_views.roomreservation),
     # url(r"^aaa/(?P<naire_id>\d+)/$",views.aaa),
 
 
